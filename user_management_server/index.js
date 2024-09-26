@@ -12,7 +12,7 @@ app.use(express.json());
 
 // connect mongodb
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri =
   "mongodb+srv://a520sibulalam:12Zx3lkmJja8DT8A@cluster0.um15t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
@@ -42,8 +42,25 @@ async function run() {
       const user = req.body;
       console.log(user);
       const result = await usersCollection.insertOne(user);
+      console.log(result);
 
-      res.send(user);
+      res.send(result);
+    });
+    // get
+    app.get("/users", async (req, res) => {
+      const cursor = usersCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // delete
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
+      console.log("please delete the id no", id);
+      res.send(result);
+      console.log(result);
     });
   } finally {
     // Ensures that the client will close when you finish/error

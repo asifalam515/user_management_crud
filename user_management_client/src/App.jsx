@@ -20,8 +20,9 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if (data.insertedDocument) {
-          alert("posted");
+        if (data.insertedId) {
+          alert("Users Added Successfully");
+          form.reset();
         }
       });
   };
