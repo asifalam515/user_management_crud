@@ -56,11 +56,36 @@ async function run() {
     // delete
     app.delete("/users/:id", async (req, res) => {
       const id = req.params.id;
+      console.log("please delete id ", id);
       const query = { _id: new ObjectId(id) };
       const result = await usersCollection.deleteOne(query);
-      console.log("please delete the id no", id);
       res.send(result);
-      console.log(result);
+    });
+
+    // Update
+    // get a document/data of specific users and update it
+    // step 1:
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    });
+    // step2:update it
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedUser = {
+        $set: {
+          name: user.name,
+          email: user.email,
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updatedUser);
+
+      res.send(result);
     });
   } finally {
     // Ensures that the client will close when you finish/error
